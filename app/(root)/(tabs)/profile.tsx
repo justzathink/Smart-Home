@@ -1,9 +1,10 @@
 import React from "react";
 import { View, Text} from "react-native";
 import { Link } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 export default function Profile() {
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
         justifyContent: "center",
@@ -16,6 +17,6 @@ export default function Profile() {
       <Link href="/explore">explore</Link>
       <Link href="/profile">profile</Link>
       <Link href="/properties/1">Property</Link>
-    </View>
+    </SafeAreaView>
   );
 }

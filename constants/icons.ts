@@ -4,6 +4,7 @@ import sun from "@/assets/icons/sun.png";
 import data from "@/assets/icons/data.png";
 import device from "@/assets/icons/device.png";
 import person from "@/assets/icons/person.png";
+import key from "@/assets/icons/key.png";
 
 export default {
   person,
@@ -12,4 +13,5 @@ export default {
   sun,
   data,
   device,
+  key,
 };
