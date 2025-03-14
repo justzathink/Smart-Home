@@ -31,10 +31,6 @@ const Monitor = () => {
         setModalVisible(true);
     };
 
-    const closeSheet = () => {
-        setSelectedSensor(null);
-    };
-
     const sensorDetails: Record<string, { id: string; name: string; type: string; status: string }[]> = {
         "Cảm biến ánh sáng": [
             { id: "1", name: "Cảm biến ánh sáng 1", type: "DT", status: "Bình thường" },
@@ -67,15 +63,16 @@ const Monitor = () => {
             <SensorCard name="Cảm biến độ ẩm" number="2" onPress={() => openSheet("Cảm biến độ ẩm")} />
 
             {/* Bottom Sheet */}
-            {isModalVisible && selectedSensor && (
+            {isModalVisible && (
                 <Modal
                     isVisible={isModalVisible}
-                    onSwipeComplete={() => setModalVisible(false)}
-                    onBackdropPress={() => setModalVisible(false)}
+                    onSwipeComplete={() => setModalVisible(!isModalVisible)}
+                    onBackdropPress={() => setModalVisible(!isModalVisible)}
                     swipeDirection="down"
                     style={{ justifyContent: "flex-end", margin: 0 }}
                     animationIn="slideInUp"
                     animationOut="slideOutDown"
+                    animationInTiming={400}
                 >
                     <View style={{ backgroundColor: "white", padding: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
                         {/* Drag Indicator */}
@@ -96,6 +93,7 @@ const Monitor = () => {
                         />
                     </View>
                 </Modal>
+
             )}
 
         </SafeAreaView>
