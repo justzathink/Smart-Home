@@ -11,6 +11,8 @@ import tempin from "@/assets/icons/tempin.png";
 import tempout from "@/assets/icons/tempout.png";
 import light from "@/assets/icons/light.png";
 
+import lightbulb from "@/assets/icons/lightbulb.png";
+
 export default {
   person,
   grid,
@@ -22,5 +24,6 @@ export default {
   humid,
   tempin,
   tempout,
-  light
+  light,
+  lightbulb,
 };

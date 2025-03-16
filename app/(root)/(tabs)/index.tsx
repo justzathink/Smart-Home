@@ -26,7 +26,6 @@ const Index = () => {
             </View>
             <Text className="ml-4 text-lg font-medium">Giám sát môi trường</Text>
           </TouchableOpacity>
-
           <TouchableOpacity onPress={() => handleDetail("/details/statistics")} className="flex-row items-center bg-gray p-4 rounded-2xl my-2">
             <View className="bg-white rounded-full p-2">
               <Image source={icons.data} resizeMode="contain" className="size-6"/>
