@@ -1,50 +1,48 @@
-# Welcome to your Expo app 👋
+<div align="center">
+VIETNAM NATIONAL UNIVERSITY, HO CHI MINH CITY
+<br />
+UNIVERSITY OF TECHNOLOGY
+<br />
+FACULTY OF COMPUTER SCIENCE AND ENGINEERING
+<br />
+<br />
+  
+[![N|Solid](https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/HCMUT_official_logo.png/238px-HCMUT_official_logo.png)](https://www.hcmut.edu.vn/vi)
+<br />
+<br />
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**MULTI-DISCIPLINARY PROJECT / Semester 242**
+<br/>
+**Group L04-61**
 
-## Get started
+</div>
 
-1. Install dependencies
+# Project: A SMART HOME APPLICATION
+## Team members
 
-   ```bash
-   npm install
-   ```
+| No. | Name             | Student ID | Email                          | Contact                                                                                                                                                                                                                     |
+| :-: | ---------------- | :--------: | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|  1  | Nguyễn Tiến Phát    |  2212527  | phat.nguyen221252729@hcmut.edu.vn       |  [<img src="https://cdn-icons-png.flaticon.com/512/733/733609.png" align="left" width=20px style="margin-left:5px" />][git1]|
+|  2  | Tống Duy Khang  |   2211467   | khoa.nguyenanh0807@hcmut.edu.vn   | [<img src="https://cdn-icons-png.flaticon.com/512/733/733609.png" align="left" width=20px style="margin-left:5px" />][git2]|
+|  3  | Nguyễn Gia Thịnh |   2213286   | thinh.nguyenza@hcmut.edu.vn |  [<img src="https://cdn-icons-png.flaticon.com/512/733/733609.png" align="left" width=20px style="margin-left:5px" />][git3]|
+|  4  | Nguyễn Nhật Khang |  2211454   | khang.nguyen2k4@hcmut.edu.vn   | [<img src="https://cdn-icons-png.flaticon.com/512/733/733609.png" align="left" width=20px style="margin-left:5px" />][git4]|
+|  5  | Nguyễn Công Vũ Hoàng  |  2211087   | hoang.nguyencong2004@hcmut.edu.vn   |  [<img src="https://cdn-icons-png.flaticon.com/512/733/733609.png" align="left" width=20px style="margin-left:5px" />][git5]|
 
-2. Start the app
+[git1]: https://github.com/justzathink/
+[git2]: https://github.com/justzathink/
+[git3]: https://github.com/justzathink/
+[git4]: https://github.com/justzathink/
+[git5]: https://github.com/justzathink/
 
-   ```bash
-    npx expo start
-   ```
+## Requirements
+Đề bài được mô tả chi tiết trong file
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Languages & Tools
+<img src="https://cdn4.iconfinder.com/data/icons/logos-3/600/React.js_logo-256.png" align="center" style="margin-left:10px; margin-bottom:5px;" width="70px" alt="React Logo"/>
+    
+    
+<img src="https://upload.wikimedia.org/wikipedia/commons/6/64/Expressjs.png" 
+         align="center" 
+         style="margin-left:10px; margin-bottom:5px;" 
+         width="70px" 
+         alt="Express Logo" />
