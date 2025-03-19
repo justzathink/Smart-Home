@@ -12,6 +12,7 @@ import tempout from "@/assets/icons/tempout.png";
 import light from "@/assets/icons/light.png";
 
 import lightbulb from "@/assets/icons/lightbulb.png";
+import fan from "@/assets/icons/fan.png";
 
 export default {
   person,
@@ -26,4 +27,5 @@ export default {
   tempout,
   light,
   lightbulb,
+  fan,
 };
