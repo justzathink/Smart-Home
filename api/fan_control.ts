@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const ADAFRUIT_IO_KEY: string = "aio_Ivvz40pqVzxBR8edvxXd2BgVqBk1";
-const BASE_URL: string = "https://io.adafruit.com/api/v2/daVincentius/feeds/bbc-fan";
+const ADAFRUIT_IO_KEY: string = "aio_krDC18LfvFvN6yyLZl1frcJqckhe";
+const BASE_URL: string = "https://io.adafruit.com/api/v2/khangnguyen2k4/feeds/assignment.quat";
 
 export const fetchFanSpeed = async (): Promise<number> => {
     try {

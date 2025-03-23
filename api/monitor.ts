@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-const ADAFRUIT_IO_USERNAME = "NguyenTienPhat";
-const ADAFRUIT_IO_KEY = "aio_LxnU78vkNdZhZ5rUF5recTNNoI6D";
+const ADAFRUIT_IO_USERNAME = "khangnguyen2k4";
+const ADAFRUIT_IO_KEY = "aio_krDC18LfvFvN6yyLZl1frcJqckhe";
 
-const BASE_URL = 'https://io.adafruit.com/api/v2/NguyenTienPhat/feeds';
+const BASE_URL = 'https://io.adafruit.com/api/v2/khangnguyen2k4/groups/assignment/feeds';
 
-const FEED_KEYS = ["temperature", "light"];
+const FEED_KEYS = ["nhiet-do", "anh-sang"];
 
 export const fetchFeeds = async () => {
     try {
@@ -34,12 +34,13 @@ export const fetchFeedData = async (feedKey: string) => {
 export const fetchMultipleFeeds = async (): Promise<SensorDataType> => {
     try {
         const requests = FEED_KEYS.map((feedKey) =>
-            axios.get(`https://io.adafruit.com/api/v2/${ADAFRUIT_IO_USERNAME}/feeds/${feedKey}/data?limit=1`, {
+            axios.get(`https://io.adafruit.com/api/v2/${ADAFRUIT_IO_USERNAME}/groups/assignment/feeds/${feedKey}/data?limit=1`, {
                 headers: { "X-AIO-Key": ADAFRUIT_IO_KEY },
             })
         );
 
         const responses = await Promise.all(requests);
+
 
         // Chuyển dữ liệu thành object { temperature: 27, humidity: 60, light: 300, pressure: 1012 }
         const data: SensorDataType = responses.reduce((result, response, index) => {
