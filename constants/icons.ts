@@ -14,6 +14,9 @@ import light from "@/assets/icons/light.png";
 import lightbulb from "@/assets/icons/lightbulb.png";
 import fan from "@/assets/icons/fan.png";
 
+import setting from "@/assets/icons/setting.png";
+import logout from "@/assets/icons/log-out.png";
+
 export default {
   person,
   grid,
@@ -28,4 +31,6 @@ export default {
   light,
   lightbulb,
   fan,
+  setting,
+  logout,
 };
