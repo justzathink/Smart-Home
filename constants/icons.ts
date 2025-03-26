@@ -16,6 +16,7 @@ import fan from "@/assets/icons/fan.png";
 
 import setting from "@/assets/icons/setting.png";
 import logout from "@/assets/icons/log-out.png";
+import notification from "@/assets/icons/notification.png";
 
 export default {
   person,
@@ -33,4 +34,5 @@ export default {
   fan,
   setting,
   logout,
+  notification,
 };

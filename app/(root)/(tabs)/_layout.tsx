@@ -57,12 +57,12 @@ const Tabslayout = () => {
                 }}
             />
             <Tabs.Screen
-                name="explore"
+                name="notification"
                 options={{
-                    title: "Explore",
+                    title: "Notification",
                     headerShown: false,
                     tabBarIcon: ({focused}) => (
-                        <TabIcon icon={icons.door} focused = {focused} title="Explore"/>
+                        <TabIcon icon={icons.notification} focused = {focused} title="Thông báo"/>
                     )
                 }}
             />
