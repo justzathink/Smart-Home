@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Dimensions, Button, StyleSheet, Touchable, TouchableOpacity, Switch, TextInput } from "react-native";
+import { View, Text, Dimensions, Button, StyleSheet, Touchable, TouchableOpacity, Switch, TextInput, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LineChart } from "react-native-chart-kit";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -32,6 +32,7 @@ const Statistic = () => {
         humidity: true,
         light: true,
     });
+    const [loading, setLoading] = useState(false)
     const [apllyFilter, setApplyFilter] = useState(false)
     const [temperatureMin, setTemperatureMin] = useState<number | null>(null);
     const [temperatureMax, setTemperatureMax] = useState<number | null>(null);
@@ -74,35 +75,46 @@ const Statistic = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const dateString = selectedDate.toISOString().split("T")[0];
-            const startTime = `${dateString}T00:00:00.000Z`;
-            const endTime = `${dateString}T23:59:59.999Z`;
+            try {
+                const dateString = selectedDate.toISOString().split("T")[0];
+                const startTime = `${dateString}T00:00:00.000Z`;
+                const endTime = `${dateString}T23:59:59.999Z`;
+                setLoading(true);
+                const fetchFeed = async (feedKey: string) => {
+                    try {
+                        const response = await fetch(
+                            `https://io.adafruit.com/api/v2/khangnguyen2k4/feeds/assignment.${feedKey}/data/chart?hours=1&start_time=${startTime}&end_time=${endTime}`
+                        );
+                        const json = await response.json();
+                        return json.data.map((entry: [string, string]) => ({
+                            date: entry[0],
+                            value: parseFloat(entry[1]),
+                        }));
+                    } catch (error) {
+                        console.error("Error: ", error)
+                    }
+                };
 
-            const fetchFeed = async (feedKey: string) => {
-                const response = await fetch(
-                    `https://io.adafruit.com/api/v2/khangnguyen2k4/feeds/assignment.${feedKey}/data/chart?hours=1&start_time=${startTime}&end_time=${endTime}`
-                );
-                const json = await response.json();
-                return json.data.map((entry: [string, string]) => ({
-                    date: entry[0],
-                    value: parseFloat(entry[1]),
-                }));
-            };
+                const [tempData, humidityData, lightData] = await Promise.all([
+                    fetchFeed("nhiet-do"),
+                    fetchFeed("do-am"),
+                    fetchFeed("anh-sang"),
+                ]);
 
-            const [tempData, humidityData, lightData] = await Promise.all([
-                fetchFeed("nhiet-do"),
-                fetchFeed("do-am"),
-                fetchFeed("anh-sang"),
-            ]);
+                const newRawData = {
+                    temperature: tempData,
+                    humidity: humidityData,
+                    light: lightData,
+                };
 
-            const newRawData = {
-                temperature: tempData,
-                humidity: humidityData,
-                light: lightData,
-            };
+                setRawData(newRawData); // Lưu tất cả data gốc
+                updateChartData(newRawData, filters); // Render theo filters ban đầu
+            } catch (error) {
+                console.error("Message error: ", error)
+            } finally {
+                setLoading(false)
+            }
 
-            setRawData(newRawData); // Lưu tất cả data gốc
-            updateChartData(newRawData, filters); // Render theo filters ban đầu
         };
 
         fetchData();
@@ -288,11 +300,17 @@ const Statistic = () => {
                 onChange={handleFilterChange}
                 onRangeChange={handleRangeChange} />
 
-            {chartData.labels.length > 0 ? (
+            {loading ? (
+                <View style={{ marginTop: 40, alignItems: 'center' }}>
+                    <ActivityIndicator size="large" color="#000" />
+                    <Text style={{ marginTop: 8 }}>Đang tải dữ liệu...</Text>
+                </View>
+            ) : chartData.labels.length > 0 ? (
                 <LineChart
                     data={chartData}
                     width={screenWidth - 32}
                     height={280}
+                    withShadow={false}
                     chartConfig={{
                         backgroundColor: "#ffffff",
                         backgroundGradientFrom: "#ffffff",
@@ -313,7 +331,6 @@ const Statistic = () => {
                     Không có dữ liệu
                 </Text>
             )}
-
         </SafeAreaView>
     );
 };
