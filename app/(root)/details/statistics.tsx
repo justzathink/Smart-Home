@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, Dimensions, Button, StyleSheet, Touchable, TouchableOpacity, Switch, TextInput, ActivityIndicator } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { View, Text, Dimensions, Button, StyleSheet, Touchable, TouchableOpacity, Switch, TextInput, ActivityIndicator, Animated, TouchableWithoutFeedback } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LineChart } from "react-native-chart-kit";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -12,10 +12,62 @@ const Statistic = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [isFilterVisible, setFilterVisible] = useState(false)
+    const [filterAnimation] = useState(new Animated.Value(0));
     const [chartData, setChartData] = useState<ChartKitData>({
         labels: [],
         datasets: [],
     });
+    const [selectedPoint, setSelectedPoint] = useState<{ value: number; index: number } | null>(null);
+    const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
+    const [tooltipOpacity] = useState(new Animated.Value(0)); // Khởi tạo opacity = 0 (ẩn)
+
+    const handleDataPointClick = (data: { index: number; value: number; dataset: any; x: number; y: number; getColor: (opacity: number) => string }) => {
+        const { value, index, x, y, dataset } = data;
+
+        setSelectedPoint({ value, index });
+        const tooltipX = x - 25;
+        const tooltipY = y + 130;
+
+        setTooltipPosition({ x: tooltipX, y: tooltipY });
+
+        Animated.timing(tooltipOpacity, {
+            toValue: 1,
+            duration: 300,
+            useNativeDriver: true,
+        }).start();
+
+        setTimeout(() => {
+            Animated.timing(tooltipOpacity, {
+                toValue: 0,
+                duration: 300,
+                useNativeDriver: true,
+            }).start();
+
+            setTimeout(() => {
+                setTooltipPosition(null);
+                setSelectedPoint(null);
+            }, 300);
+        }, 3000);
+    };
+
+    useEffect(() => {
+        if (isFilterVisible) {
+            // Khi filter panel xuất hiện, zoom in (scale 1)
+            Animated.spring(filterAnimation, {
+                toValue: 1, // Kích thước ban đầu
+                friction: 8, // Độ ma sát để hiệu ứng mượt mà
+                useNativeDriver: true, // Dùng native driver để hiệu suất tốt hơn
+            }).start();
+        } else {
+            // Khi filter panel biến mất, zoom out (scale 0)
+            Animated.spring(filterAnimation, {
+                toValue: 0, // Kích thước nhỏ dần
+                friction: 8,
+                useNativeDriver: true,
+            }).start();
+        }
+    }, [isFilterVisible]);
+
     const [rawData, setRawData] = useState({
         temperature: [],
         humidity: [],
@@ -311,6 +363,7 @@ const Statistic = () => {
                     width={screenWidth - 32}
                     height={280}
                     withShadow={false}
+                    onDataPointClick={handleDataPointClick}
                     chartConfig={{
                         backgroundColor: "#ffffff",
                         backgroundGradientFrom: "#ffffff",
@@ -326,10 +379,23 @@ const Statistic = () => {
                     bezier
                     style={{ marginVertical: 16, borderRadius: 12 }}
                 />
+
             ) : (
                 <Text className="text-center font-bold mt-4 text-xl">
                     Không có dữ liệu
                 </Text>
+            )}
+            {tooltipPosition && selectedPoint && (
+                <Animated.View
+                    style={[
+                        { position: 'absolute', zIndex: 9999, padding: 5, backgroundColor: 'rgba(0, 0, 0, 0.7)', borderRadius: 5 },
+                        { left: tooltipPosition.x, top: tooltipPosition.y, opacity: tooltipOpacity },
+                    ]}
+                >
+                    <Text style={{ color: '#fff' }}>
+                        {`Giá trị: ${selectedPoint.value.toFixed(1)}`}
+                    </Text>
+                </Animated.View>
             )}
         </SafeAreaView>
     );
@@ -346,92 +412,139 @@ interface FilterPanelProps {
 }
 
 const FilterPanel: React.FC<FilterPanelProps> = ({ visible, onClose, filters, onChange, onRangeChange }) => {
-    if (!visible) return null;
+    const slideAnim = useRef(new Animated.Value(100)).current; // Bắt đầu ở dưới
+    const opacityAnim = useRef(new Animated.Value(0)).current;
+    const opacity = useRef(new Animated.Value(0)).current;
+    const [shouldRender, setShouldRender] = useState(visible);
+    const scale = useRef(new Animated.Value(0.95)).current;
+    useEffect(() => {
+        if (visible) {
+            setShouldRender(true);
+            Animated.parallel([
+                Animated.timing(opacity, {
+                    toValue: 1,
+                    duration: 250,
+                    useNativeDriver: true,
+                }),
+                Animated.spring(scale, {
+                    toValue: 1,
+                    useNativeDriver: true,
+                })
+            ]).start();
+        } else {
+            Animated.parallel([
+                Animated.timing(opacity, {
+                    toValue: 0,
+                    duration: 200,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(scale, {
+                    toValue: 0.95,
+                    duration: 200,
+                    useNativeDriver: true,
+                })
+            ]).start(() => {
+                setShouldRender(false);
+            });
+        }
+    }, [visible]);
+    if (!shouldRender) return null;
 
     return (
-        <View style={styles.overlay}>
-            <View style={styles.panel}>
-                <Text style={styles.title}>Bộ lọc dữ liệu</Text>
+        <TouchableWithoutFeedback onPress={onClose}>
+            <Animated.View
+                style={[
+                    styles.overlay,
+                    {
+                        opacity,
+                        transform: [{ scale }],
+                    },
+                ]}
+            >
+                <View style={styles.panel}>
+                    <Text style={styles.title}>Bộ lọc dữ liệu</Text>
 
-                <View style={styles.option}>
-                    <Text style={styles.label}>Nhiệt độ</Text>
-                    <Switch
-                        value={filters.temperature}
-                        onValueChange={(val) => onChange("temperature", val)}
-                    />
-                </View>
+                    <View style={styles.option}>
+                        <Text style={styles.label}>Nhiệt độ</Text>
+                        <Switch
+                            value={filters.temperature}
+                            onValueChange={(val) => onChange("temperature", val)}
+                        />
+                    </View>
 
-                <View style={styles.option}>
-                    <Text style={styles.label}>Độ ẩm</Text>
-                    <Switch
-                        value={filters.humidity}
-                        onValueChange={(val) => onChange("humidity", val)}
-                    />
-                </View>
+                    <View style={styles.option}>
+                        <Text style={styles.label}>Độ ẩm</Text>
+                        <Switch
+                            value={filters.humidity}
+                            onValueChange={(val) => onChange("humidity", val)}
+                        />
+                    </View>
 
-                <View style={styles.option}>
-                    <Text style={styles.label}>Ánh sáng</Text>
-                    <Switch
-                        value={filters.light}
-                        onValueChange={(val) => onChange("light", val)}
-                    />
-                </View>
+                    <View style={styles.option}>
+                        <Text style={styles.label}>Ánh sáng</Text>
+                        <Switch
+                            value={filters.light}
+                            onValueChange={(val) => onChange("light", val)}
+                        />
+                    </View>
 
-                {/* Range Filter */}
-                <View style={styles.rangeOption}>
-                    <Text style={styles.label}>Nhiệt độ từ</Text>
-                    <TextInput
-                        style={styles.input}
-                        keyboardType="numeric"
-                        placeholder="Min"
-                        onChangeText={(val) => onRangeChange("temperatureMin", parseFloat(val))}
-                    />
-                    <Text style={styles.label2}>đến</Text>
-                    <TextInput
-                        style={styles.input}
-                        keyboardType="numeric"
-                        placeholder="Max"
-                        onChangeText={(val) => onRangeChange("temperatureMax", parseFloat(val))}
-                    />
-                </View>
-                <View style={styles.rangeOption}>
-                    <Text style={styles.label}>Độ ẩm từ</Text>
-                    <TextInput
-                        style={styles.input}
-                        keyboardType="numeric"
-                        placeholder="Min"
-                        onChangeText={(val) => onRangeChange("humidityMin", parseFloat(val))}
-                    />
-                    <Text style={styles.label2}>đến</Text>
-                    <TextInput
-                        style={styles.input}
-                        keyboardType="numeric"
-                        placeholder="Max"
-                        onChangeText={(val) => onRangeChange("humidityMax", parseFloat(val))}
-                    />
-                </View>
-                <View style={styles.rangeOption}>
-                    <Text style={styles.label}>Ánh sáng từ</Text>
-                    <TextInput
-                        style={styles.input}
-                        keyboardType="numeric"
-                        placeholder="Min"
-                        onChangeText={(val) => onRangeChange("lightMin", parseFloat(val))}
-                    />
-                    <Text style={styles.label2}>đến</Text>
-                    <TextInput
-                        style={styles.input}
-                        keyboardType="numeric"
-                        placeholder="Max"
-                        onChangeText={(val) => onRangeChange("lightMax", parseFloat(val))}
-                    />
-                </View>
+                    {/* Range Filter */}
+                    <View style={styles.rangeOption}>
+                        <Text style={styles.label}>Nhiệt độ từ</Text>
+                        <TextInput
+                            style={styles.input}
+                            keyboardType="numeric"
+                            placeholder="Min"
+                            onChangeText={(val) => onRangeChange("temperatureMin", parseFloat(val))}
+                        />
+                        <Text style={styles.label2}>đến</Text>
+                        <TextInput
+                            style={styles.input}
+                            keyboardType="numeric"
+                            placeholder="Max"
+                            onChangeText={(val) => onRangeChange("temperatureMax", parseFloat(val))}
+                        />
+                    </View>
+                    <View style={styles.rangeOption}>
+                        <Text style={styles.label}>Độ ẩm từ</Text>
+                        <TextInput
+                            style={styles.input}
+                            keyboardType="numeric"
+                            placeholder="Min"
+                            onChangeText={(val) => onRangeChange("humidityMin", parseFloat(val))}
+                        />
+                        <Text style={styles.label2}>đến</Text>
+                        <TextInput
+                            style={styles.input}
+                            keyboardType="numeric"
+                            placeholder="Max"
+                            onChangeText={(val) => onRangeChange("humidityMax", parseFloat(val))}
+                        />
+                    </View>
+                    <View style={styles.rangeOption}>
+                        <Text style={styles.label}>Ánh sáng từ</Text>
+                        <TextInput
+                            style={styles.input}
+                            keyboardType="numeric"
+                            placeholder="Min"
+                            onChangeText={(val) => onRangeChange("lightMin", parseFloat(val))}
+                        />
+                        <Text style={styles.label2}>đến</Text>
+                        <TextInput
+                            style={styles.input}
+                            keyboardType="numeric"
+                            placeholder="Max"
+                            onChangeText={(val) => onRangeChange("lightMax", parseFloat(val))}
+                        />
+                    </View>
 
-                <TouchableOpacity style={styles.button} onPress={onClose}>
-                    <Text style={styles.buttonText}>Áp dụng</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
+                    <TouchableOpacity style={styles.button} onPress={onClose}>
+                        <Text style={styles.buttonText}>Áp dụng</Text>
+                    </TouchableOpacity>
+                </View>
+            </Animated.View>
+        </TouchableWithoutFeedback>
+
     );
 };
 
@@ -442,7 +555,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: "rgba(0,0,0,0.3)",
+        backgroundColor: "rgba(0,0,0,0.1)",
         justifyContent: "center",
         alignItems: "center",
         zIndex: 10,
@@ -452,7 +565,7 @@ const styles = StyleSheet.create({
         padding: 20,
         borderRadius: 16,
         width: "90%",
-        shadowColor: "#000",
+        shadowColor: "#fff",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
         shadowRadius: 6,
@@ -504,5 +617,17 @@ const styles = StyleSheet.create({
         padding: 8,
         marginVertical: 8,
         width: "auto",
+    },
+    tooltip: {
+        position: 'absolute',
+        backgroundColor: '#333',
+        padding: 8,
+        borderRadius: 6,
+        opacity: 0.8,
+        zIndex: 10,
+    },
+    tooltipText: {
+        color: '#fff',
+        fontSize: 12,
     },
 });
