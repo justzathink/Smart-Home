@@ -343,7 +343,6 @@ const Statistic = () => {
                 onCancel={hideDatePicker}
             />
 
-
             {/* Filter */}
             <FilterPanel
                 visible={isFilterVisible}
@@ -351,6 +350,7 @@ const Statistic = () => {
                 filters={filters}
                 onChange={handleFilterChange}
                 onRangeChange={handleRangeChange} />
+
 
             {loading ? (
                 <View style={{ marginTop: 40, alignItems: 'center' }}>
