@@ -1,12 +1,13 @@
 
 
 const AIO_USERNAME = "khangnguyen2k4";
+const FEED = "assignment.password";
 const FEED_KEY = "assignment.pass";
 const AIO_KEY = "aio_fnev41LugFWmzdJcQvX4kjJuexeQ";
 
 export const getCorrectPin = async (): Promise<string | null> => {
     try {
-        const res = await fetch(`https://io.adafruit.com/api/v2/${AIO_USERNAME}/feeds/${FEED_KEY}/data/last`, {
+        const res = await fetch(`https://io.adafruit.com/api/v2/${AIO_USERNAME}/feeds/${FEED}/data/last`, {
             headers: {
                 "X-AIO-Key": AIO_KEY
             }
