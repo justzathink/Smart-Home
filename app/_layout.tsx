@@ -24,6 +24,7 @@ export default function RootLayout() {
     return null;
   }
   return (
-      <Stack screenOptions={{ headerShown: false }} />
+    <Stack 
+      screenOptions={{ headerShown: false }}/>
   );
 }

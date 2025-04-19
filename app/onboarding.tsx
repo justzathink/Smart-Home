@@ -1,11 +1,13 @@
 import React from "react";
 import { View, Text, ScrollView, Image, TouchableOpacity} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 
 import images from '@/constants/images'
 const OnBoarding = () => {
+    const router = useRouter();
     const handleLogin = () => {
-        // Navigate to login screen
+        router.push("/sign-in");
     };
     return (
         <SafeAreaView className="bg-white h-full">
