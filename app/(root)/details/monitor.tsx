@@ -7,7 +7,7 @@ import { Stack } from "expo-router";
 
 import icons from '@/constants/icons'
 
-import { fetchFeeds, fetchFeedData, fetchMultipleFeeds, SensorDataType } from "@/api/monitor";
+import { fetchMultipleFeeds, SensorDataType } from "@/api/monitor";
 
 const FEEDS = ["TEMPERATURE", "LIGHT"]
 
@@ -32,7 +32,8 @@ const Monitor = () => {
     const [feedValues, setFeedValues] = useState<{ [key: string]: string }>({});
     const [sensorData, setSensorData] = useState<SensorDataType>({
         temperature: "N/A",
-        light: "N/A"
+        light: "N/A",
+        humidity: "N/A"
     });
 
     useEffect(() => {
@@ -45,7 +46,7 @@ const Monitor = () => {
         fetchData();
 
         // Thiết lập interval mỗi 3 giây
-        const interval = setInterval(fetchData, 3000);
+        const interval = setInterval(fetchData, 5000);
 
         // Cleanup interval khi component unmount
         return () => clearInterval(interval);
@@ -68,7 +69,7 @@ const Monitor = () => {
             <Text className="font-semibold text-2xl mb-3">Thông tin chung</Text>
 
             <View className="flex flex-row">
-                <SensorCard icon={icons.humid} value="6%" label="Độ ẩm" />
+                <SensorCard icon={icons.humid} value={`${sensorData.humidity}%`} label="Độ ẩm" />
                 <SensorCard icon={icons.light} value={`${sensorData.light} lux`} label="Cường độ ánh sáng" />
             </View>
 
