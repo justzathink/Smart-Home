@@ -3,7 +3,7 @@ import axios from "axios";
 
 const ADAFRUIT_USERNAME = 'khangnguyen2k4';
 const ADAFRUIT_KEY = 'aio_fnev41LugFWmzdJcQvX4kjJuexeQ';
-const FEED_NAME = 'assignment.password';
+const FEED_NAME = 'assignment.pass';
 
 export const updateDoorStatus = async (status: number) => {
   try {
