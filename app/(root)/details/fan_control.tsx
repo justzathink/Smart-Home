@@ -73,6 +73,8 @@ const FanControl: React.FC = () => {
         }, 500);
     };
 
+    console.log(sliderValues);
+
     return (
         <SafeAreaView className="px-6 bg-white h-full">
             <Stack.Screen options={{ headerShown: true, title: "Điều khiển" }} />
