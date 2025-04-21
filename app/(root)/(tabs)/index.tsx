@@ -15,6 +15,8 @@ import { useRouter } from "expo-router";
 const Index = () => {
 	const router = useRouter();
 
+	const [currentTime, setCurrentTime] = useState('');
+
 	const handleDetail = (
 		screen:
 			| "/details/monitor"
@@ -24,7 +26,7 @@ const Index = () => {
 	) => {
 		router.push(screen);
 	};
-	
+
 	const [username, setUsername] = useState<string | null>("");
 
 	useEffect(() => {
@@ -35,12 +37,18 @@ const Index = () => {
 		fetchUsername();
 	}, []);
 
+	useEffect(() => {
+		const now = new Date();
+		const formatted = now.toLocaleDateString('vi-VN'); // định dạng dd/mm/yyyy
+		setCurrentTime(formatted);
+	}, []);
+
 	return (
 		<SafeAreaView className='flex-1 bg-white px-6 pt-40'>
 			<StatusBar style='dark' />
 			<Text className='text-2xl font-bold'>Xin chào, {username}</Text>
-			<Text className='text-gray-500 text-sm'>DĨ AN, BÌNH DƯƠNG</Text>
-			<Text className='text-gray-400 text-xs mt-1'>26/02/2025</Text>
+			<Text className='text-gray-500 text-md'>DĨ AN, BÌNH DƯƠNG</Text>
+			<Text className='text-gray-400 text-md mt-1'>{currentTime}</Text>
 			<View className='border-b border-purple my-4' />
 			<Text className='text-lg font-semibold mb-2'>Chức năng</Text>
 			<TouchableOpacity
