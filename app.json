@@ -3,6 +3,7 @@
     "name": "smarthome",
     "slug": "smarthome",
     "version": "1.0.0",
+    "projectId": "84d3a97f-a0e2-4f20-bc9f-4e309d00ef3d",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -33,27 +34,36 @@
           "enableFullScreenImage_legacy": true
         }
       ],
-    [
-      "expo-font",
-      {
-        "fonts": [
-          {
-            "family": "Poppins",
-            "fonts": [
-              "./assets/fonts/Rubik-Bold.ttf",
-              "./assets/fonts/Rubik-ExtraBold.ttf",
-              "./assets/fonts/Rubik-Medium.ttf",
-              "./assets/fonts/Rubik-Light.ttf",
-              "./assets/fonts/Rubik-Regular.ttf",
-              "./assets/fonts/Rubik-SemiBold.ttf"
-            ]
-          }
-        ]
-      }
-    ]
+      [
+        "expo-font",
+        {
+          "fonts": [
+            {
+              "family": "Poppins",
+              "fonts": [
+                "./assets/fonts/Rubik-Bold.ttf",
+                "./assets/fonts/Rubik-ExtraBold.ttf",
+                "./assets/fonts/Rubik-Medium.ttf",
+                "./assets/fonts/Rubik-Light.ttf",
+                "./assets/fonts/Rubik-Regular.ttf",
+                "./assets/fonts/Rubik-SemiBold.ttf"
+              ]
+            }
+          ]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "84d3a97f-a0e2-4f20-bc9f-4e309d00ef3d"
+      }
+    },
+    "owner": "nguyentienphat"
   }
 }

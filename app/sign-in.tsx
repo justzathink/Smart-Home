@@ -11,6 +11,19 @@ import { useRouter } from "expo-router";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import config from "@/constants/config";
+import Constants from "expo-constants"
+
+import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
+
+// Config noti
+Notifications.setNotificationHandler({
+	handleNotification: async () => ({
+		shouldShowAlert: true,
+		shouldPlaySound: true,
+		shouldSetBadge: true,
+	}),
+});
 
 const LoginScreen = () => {
 	const router = useRouter();
@@ -24,9 +37,33 @@ const LoginScreen = () => {
 
 	const handleLogin = async () => {
 		try {
+			if (!Device.isDevice) {
+				alert("Push notifications only work on physical devices!");
+				return;
+			}
+
+			const { status: existingStatus } = await Notifications.getPermissionsAsync();
+			let finalStatus: Notifications.PermissionStatus = existingStatus;
+
+			if (existingStatus !== "granted") {
+				const { status } = await Notifications.requestPermissionsAsync();
+				finalStatus = status;
+			}
+
+			if (finalStatus !== "granted") {
+				alert("Failed to get push token for push notification!");
+				return;
+			}
+
+			const tokenData = await Notifications.getExpoPushTokenAsync({
+				'projectId': Constants?.expoConfig?.extra?.eas?.projectId,
+			});
+			const expoPushToken: string = tokenData.data;
+
 			const respond = await axios.post(`${config.BASE_URL}/auth/login`, {
 				username,
 				password,
+				expoPushToken
 			});
 
 			const token = respond.data.token;
