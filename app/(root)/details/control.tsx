@@ -10,7 +10,7 @@ import { useRouter } from "expo-router";
 const Control = () =>{
     const router = useRouter();
     
-        const handleDetail = (screen: "/details/light_control" | "/details/fan_control") => {
+        const handleDetail = (screen: "/details/light_control" | "/details/fan_control" | "/details/motor_control") => {
         router.push(screen);
     };
 
@@ -36,6 +36,12 @@ const Control = () =>{
                     <Image source={icons.fan} resizeMode="contain" className="size-6"/>
                 </View>
                 <Text className="ml-4 text-lg font-medium">Quạt</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleDetail("/details/motor_control")} className="flex-row items-center bg-gray p-4 rounded-2xl my-2">
+                <View className="bg-white rounded-full p-2">
+                    <Image source={icons.fan} resizeMode="contain" className="size-6"/>
+                </View>
+                <Text className="ml-4 text-lg font-medium">Máy bơm</Text>
             </TouchableOpacity>
         </SafeAreaView>
 
