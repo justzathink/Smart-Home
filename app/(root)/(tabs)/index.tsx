@@ -23,6 +23,7 @@ const Index = () => {
 			| "/details/statistics"
 			| "/details/control"
 			| "/details/door"
+			| "/details/schedule"
 	) => {
 		router.push(screen);
 	};
@@ -88,6 +89,15 @@ const Index = () => {
 					<Image source={icons.key} resizeMode='contain' className='size-6' />
 				</View>
 				<Text className='ml-4 text-lg font-medium'>Quản lý cửa</Text>
+			</TouchableOpacity>
+			<TouchableOpacity
+				onPress={() => handleDetail("/details/schedule")}
+				className='flex-row items-center bg-gray p-4 rounded-2xl my-2'
+			>
+				<View className='bg-white rounded-full p-2'>
+					<Image source={icons.key} resizeMode='contain' className='size-6' />
+				</View>
+				<Text className='ml-4 text-lg font-medium'>Đặt lịch</Text>
 			</TouchableOpacity>
 		</SafeAreaView>
 	);

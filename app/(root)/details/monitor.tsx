@@ -34,7 +34,7 @@ const Monitor = () => {
 	const [sensorData, setSensorData] = useState<SensorDataType>({
 		temperature: "N/A",
 		light: "N/A",
-        humidity: "N/A"
+		humidity: "N/A"
 	});
 
 	useEffect(() => {
@@ -63,7 +63,7 @@ const Monitor = () => {
 
 	return (
 		<SafeAreaView className='px-6 bg-white h-full'>
-			{}
+			{ }
 			<Stack.Screen
 				options={{
 					headerShown: true,

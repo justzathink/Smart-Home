@@ -39,7 +39,7 @@ const Door = () => {
         if (enteredPin === correctPin) {
             setErrorMessage('');
             await updateDoorStatus(1);
-    
+
             Alert.alert("Success", "Mật khẩu chính xác!", [
                 {
                     text: "OK",
@@ -50,16 +50,16 @@ const Door = () => {
             setErrorMessage('Sai mật khẩu, hãy nhập lại');
             setPin(['', '', '', '', '']);
             inputs.current[0]?.focus();
-    
+
             await updateDoorStatus(0);
         }
     };
-    
+
 
     return (
         <SafeAreaView className="flex-1 bg-white px-6 pt-30 items-center">
             <Stack.Screen options={{ headerShown: true, title: "Quản lý cửa" }} />
-            <Image source={images.authentication} className="w-full h-1/3" resizeMode="contain"/>
+            <Image source={images.authentication} className="w-full h-1/3" resizeMode="contain" />
             <Text className="text-lg font-bold mb-5">Nhập mật khẩu</Text>
 
             <View className="flex-row justify-between mb-3">

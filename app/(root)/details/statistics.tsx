@@ -1,60 +1,27 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-	View,
-	Text,
-	Dimensions,
-	Button,
-	StyleSheet,
-	Touchable,
-	TouchableOpacity,
-	Switch,
-	TextInput,
-	ActivityIndicator,
-	Animated,
-	TouchableWithoutFeedback,
-} from "react-native";
+import { View, Text, Dimensions, Button, StyleSheet, Touchable, TouchableOpacity, Switch, TextInput, ActivityIndicator, Animated, TouchableWithoutFeedback } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LineChart } from "react-native-chart-kit";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Stack } from "expo-router";
-import {
-	processData,
-	ChartKitData,
-	Filter,
-	RawData,
-	processValues,
-	generateLabels,
-} from "../../../api/statistic";
+import { processData, ChartKitData, Filter, RawData, processValues, generateLabels } from "../../../api/statistic";
 
 const screenWidth = Dimensions.get("window").width;
 
 const Statistic = () => {
 	const [selectedDate, setSelectedDate] = useState(new Date());
 	const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-	const [isFilterVisible, setFilterVisible] = useState(false);
+	const [isFilterVisible, setFilterVisible] = useState(false)
 	const [filterAnimation] = useState(new Animated.Value(0));
 	const [chartData, setChartData] = useState<ChartKitData>({
 		labels: [],
 		datasets: [],
 	});
-	const [selectedPoint, setSelectedPoint] = useState<{
-		value: number;
-		index: number;
-	} | null>(null);
-	const [tooltipPosition, setTooltipPosition] = useState<{
-		x: number;
-		y: number;
-	} | null>(null);
+	const [selectedPoint, setSelectedPoint] = useState<{ value: number; index: number } | null>(null);
+	const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
 	const [tooltipOpacity] = useState(new Animated.Value(0)); // Khởi tạo opacity = 0 (ẩn)
 
-	const handleDataPointClick = (data: {
-		index: number;
-		value: number;
-		dataset: any;
-		x: number;
-		y: number;
-		getColor: (opacity: number) => string;
-	}) => {
+	const handleDataPointClick = (data: { index: number; value: number; dataset: any; x: number; y: number; getColor: (opacity: number) => string }) => {
 		const { value, index, x, y, dataset } = data;
 
 		setSelectedPoint({ value, index });
@@ -117,8 +84,8 @@ const Statistic = () => {
 		humidity: true,
 		light: true,
 	});
-	const [loading, setLoading] = useState(false);
-	const [apllyFilter, setApplyFilter] = useState(false);
+	const [loading, setLoading] = useState(false)
+	const [apllyFilter, setApplyFilter] = useState(false)
 	const [temperatureMin, setTemperatureMin] = useState<number | null>(null);
 	const [temperatureMax, setTemperatureMax] = useState<number | null>(null);
 	const [humidityMin, setHumidityMin] = useState<number | null>(null);
@@ -133,11 +100,11 @@ const Statistic = () => {
 		hideDatePicker();
 	};
 
-	const showFilter = () => setFilterVisible(true);
+	const showFilter = () => setFilterVisible(true)
 	const hideFilter = () => {
-		setApplyFilter(true);
-		setFilterVisible(false);
-	};
+		setApplyFilter(true)
+		setFilterVisible(false)
+	}
 	const handleFilterChange = (filterKey: string, value: boolean) => {
 		setFilters((prev) => ({ ...prev, [filterKey]: value }));
 	};
@@ -176,7 +143,7 @@ const Statistic = () => {
 							value: parseFloat(entry[1]),
 						}));
 					} catch (error) {
-						console.error("Error: ", error);
+						console.error("Error: ", error)
 					}
 				};
 
@@ -195,10 +162,11 @@ const Statistic = () => {
 				setRawData(newRawData); // Lưu tất cả data gốc
 				updateChartData(newRawData, filters); // Render theo filters ban đầu
 			} catch (error) {
-				console.error("Message error: ", error);
+				console.error("Message error: ", error)
 			} finally {
-				setLoading(false);
+				setLoading(false)
 			}
+
 		};
 
 		fetchData();
@@ -229,9 +197,7 @@ const Statistic = () => {
 			data.forEach((item) => {
 				const date = new Date(item.date);
 				date.setMinutes(date.getMinutes() < 30 ? 0 : 30, 0, 0);
-				const label = `${date.getHours()}h${
-					date.getMinutes() === 0 ? "" : "30"
-				}`;
+				const label = `${date.getHours()}h${date.getMinutes() === 0 ? "" : "30"}`;
 
 				if (!map[label]) {
 					map[label] = { sum: item.value, count: 1 };
@@ -256,8 +222,7 @@ const Statistic = () => {
 		): Record<string, number> => {
 			const result: Record<string, number> = {};
 			for (const [label, value] of Object.entries(map)) {
-				if ((min !== null && value <= min) || (max !== null && value >= max))
-					continue;
+				if ((min !== null && value <= min) || (max !== null && value >= max)) continue;
 				result[label] = value;
 			}
 			return result;
@@ -271,7 +236,7 @@ const Statistic = () => {
 			grouped = filterByMinMax(grouped, temperatureMin, temperatureMax);
 			groupedData.temperature = grouped;
 
-			Object.keys(grouped).forEach((label) => labelsSet.add(label));
+			Object.keys(grouped).forEach(label => labelsSet.add(label));
 
 			legend.push("Nhiệt độ (°C)");
 		}
@@ -281,7 +246,7 @@ const Statistic = () => {
 			grouped = filterByMinMax(grouped, humidityMin, humidityMax);
 			groupedData.humidity = grouped;
 
-			Object.keys(grouped).forEach((label) => labelsSet.add(label));
+			Object.keys(grouped).forEach(label => labelsSet.add(label));
 
 			legend.push("Độ ẩm (%)");
 		}
@@ -291,7 +256,7 @@ const Statistic = () => {
 			grouped = filterByMinMax(grouped, lightMin, lightMax);
 			groupedData.light = grouped;
 
-			Object.keys(grouped).forEach((label) => labelsSet.add(label));
+			Object.keys(grouped).forEach(label => labelsSet.add(label));
 
 			legend.push("Ánh sáng (lux)");
 		}
@@ -302,9 +267,7 @@ const Statistic = () => {
 
 		if (filters.temperature && groupedData.temperature) {
 			datasets.push({
-				data: sortedLabels.map(
-					(label) => groupedData.temperature?.[label] ?? null
-				),
+				data: sortedLabels.map(label => groupedData.temperature?.[label] ?? null),
 				color: () => lineColors.temperature,
 				strokeWidth: 2,
 			});
@@ -312,9 +275,7 @@ const Statistic = () => {
 
 		if (filters.humidity && groupedData.humidity) {
 			datasets.push({
-				data: sortedLabels.map(
-					(label) => groupedData.humidity?.[label] ?? null
-				),
+				data: sortedLabels.map(label => groupedData.humidity?.[label] ?? null),
 				color: () => lineColors.humidity,
 				strokeWidth: 2,
 			});
@@ -322,7 +283,7 @@ const Statistic = () => {
 
 		if (filters.light && groupedData.light) {
 			datasets.push({
-				data: sortedLabels.map((label) => groupedData.light?.[label] ?? null),
+				data: sortedLabels.map(label => groupedData.light?.[label] ?? null),
 				color: () => lineColors.light,
 				strokeWidth: 2,
 			});
@@ -347,50 +308,36 @@ const Statistic = () => {
 	useEffect(() => {
 		if (apllyFilter) {
 			updateChartData(rawData, filters);
-			setApplyFilter(false);
-			setTemperatureMax(null);
-			setTemperatureMin(null);
-			setHumidityMax(null);
-			setHumidityMin(null);
-			setLightMax(null);
-			setLightMin(null);
+			setApplyFilter(false)
+			setTemperatureMax(null)
+			setTemperatureMin(null)
+			setHumidityMax(null)
+			setHumidityMin(null)
+			setLightMax(null)
+			setLightMin(null)
 		}
 	}, [apllyFilter]);
 
 	return (
 		<SafeAreaView style={{ flex: 1, padding: 16 }}>
-			<Stack.Screen
-				options={{ headerShown: true, title: "Thống kê dữ liệu" }}
-			/>
-			<View className='flex flex-row justify-between gap-10'>
-				<View className='w-1/2'>
-					<TouchableOpacity
-						onPress={showDatePicker}
-						className='bg-blue-500 rounded-md py-2'
-					>
-						<Text className='text-lg w-full text-center text-white font-medium'>
-							Chọn ngày
-						</Text>
+			<Stack.Screen options={{ headerShown: true, title: "Thống kê dữ liệu" }} />
+			<View className="flex flex-row justify-between gap-10">
+				<View className="w-1/2">
+					<TouchableOpacity onPress={showDatePicker} className="bg-blue-500 rounded-md py-2">
+						<Text className="text-lg w-full text-center text-white font-medium">Chọn ngày</Text>
 					</TouchableOpacity>
-					<Text className='mt-2 font-semibold text-md'>
-						Ngày: {selectedDate.toLocaleDateString()}
-					</Text>
+					<Text className="mt-2 font-semibold text-md">Ngày: {selectedDate.toLocaleDateString()}</Text>
 				</View>
-				<View className='w-1/3'>
-					<TouchableOpacity
-						onPress={showFilter}
-						className='bg-blue-500 rounded-md py-2'
-					>
-						<Text className='text-lg w-full text-center text-white font-medium'>
-							Bộ lọc
-						</Text>
+				<View className="w-1/3">
+					<TouchableOpacity onPress={showFilter} className="bg-blue-500 rounded-md py-2">
+						<Text className="text-lg w-full text-center text-white font-medium">Bộ lọc</Text>
 					</TouchableOpacity>
 				</View>
 			</View>
 
 			<DateTimePickerModal
 				isVisible={isDatePickerVisible}
-				mode='date'
+				mode="date"
 				date={selectedDate}
 				onConfirm={handleConfirm}
 				onCancel={hideDatePicker}
@@ -402,12 +349,12 @@ const Statistic = () => {
 				onClose={hideFilter}
 				filters={filters}
 				onChange={handleFilterChange}
-				onRangeChange={handleRangeChange}
-			/>
+				onRangeChange={handleRangeChange} />
+
 
 			{loading ? (
-				<View style={{ marginTop: 40, alignItems: "center" }}>
-					<ActivityIndicator size='large' color='#000' />
+				<View style={{ marginTop: 40, alignItems: 'center' }}>
+					<ActivityIndicator size="large" color="#000" />
 					<Text style={{ marginTop: 8 }}>Đang tải dữ liệu...</Text>
 				</View>
 			) : chartData.labels.length > 0 ? (
@@ -432,29 +379,20 @@ const Statistic = () => {
 					bezier
 					style={{ marginVertical: 16, borderRadius: 12 }}
 				/>
+
 			) : (
-				<Text className='text-center font-bold mt-4 text-xl'>
+				<Text className="text-center font-bold mt-4 text-xl">
 					Không có dữ liệu
 				</Text>
 			)}
 			{tooltipPosition && selectedPoint && (
 				<Animated.View
 					style={[
-						{
-							position: "absolute",
-							zIndex: 9999,
-							padding: 5,
-							backgroundColor: "rgba(0, 0, 0, 0.7)",
-							borderRadius: 5,
-						},
-						{
-							left: tooltipPosition.x,
-							top: tooltipPosition.y,
-							opacity: tooltipOpacity,
-						},
+						{ position: 'absolute', zIndex: 9999, padding: 5, backgroundColor: 'rgba(0, 0, 0, 0.7)', borderRadius: 5 },
+						{ left: tooltipPosition.x, top: tooltipPosition.y, opacity: tooltipOpacity },
 					]}
 				>
-					<Text style={{ color: "#fff" }}>
+					<Text style={{ color: '#fff' }}>
 						{`Giá trị: ${selectedPoint.value.toFixed(1)}`}
 					</Text>
 				</Animated.View>
@@ -473,13 +411,7 @@ interface FilterPanelProps {
 	onRangeChange: (rangeKey: string, value: number) => void;
 }
 
-const FilterPanel: React.FC<FilterPanelProps> = ({
-	visible,
-	onClose,
-	filters,
-	onChange,
-	onRangeChange,
-}) => {
+const FilterPanel: React.FC<FilterPanelProps> = ({ visible, onClose, filters, onChange, onRangeChange }) => {
 	const slideAnim = useRef(new Animated.Value(100)).current; // Bắt đầu ở dưới
 	const opacityAnim = useRef(new Animated.Value(0)).current;
 	const opacity = useRef(new Animated.Value(0)).current;
@@ -497,7 +429,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
 				Animated.spring(scale, {
 					toValue: 1,
 					useNativeDriver: true,
-				}),
+				})
 			]).start();
 		} else {
 			Animated.parallel([
@@ -510,7 +442,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
 					toValue: 0.95,
 					duration: 200,
 					useNativeDriver: true,
-				}),
+				})
 			]).start(() => {
 				setShouldRender(false);
 			});
@@ -561,55 +493,47 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
 						<Text style={styles.label}>Nhiệt độ từ</Text>
 						<TextInput
 							style={styles.input}
-							keyboardType='numeric'
-							placeholder='Min'
-							onChangeText={(val) =>
-								onRangeChange("temperatureMin", parseFloat(val))
-							}
+							keyboardType="numeric"
+							placeholder="Min"
+							onChangeText={(val) => onRangeChange("temperatureMin", parseFloat(val))}
 						/>
 						<Text style={styles.label2}>đến</Text>
 						<TextInput
 							style={styles.input}
-							keyboardType='numeric'
-							placeholder='Max'
-							onChangeText={(val) =>
-								onRangeChange("temperatureMax", parseFloat(val))
-							}
+							keyboardType="numeric"
+							placeholder="Max"
+							onChangeText={(val) => onRangeChange("temperatureMax", parseFloat(val))}
 						/>
 					</View>
 					<View style={styles.rangeOption}>
 						<Text style={styles.label}>Độ ẩm từ</Text>
 						<TextInput
 							style={styles.input}
-							keyboardType='numeric'
-							placeholder='Min'
-							onChangeText={(val) =>
-								onRangeChange("humidityMin", parseFloat(val))
-							}
+							keyboardType="numeric"
+							placeholder="Min"
+							onChangeText={(val) => onRangeChange("humidityMin", parseFloat(val))}
 						/>
 						<Text style={styles.label2}>đến</Text>
 						<TextInput
 							style={styles.input}
-							keyboardType='numeric'
-							placeholder='Max'
-							onChangeText={(val) =>
-								onRangeChange("humidityMax", parseFloat(val))
-							}
+							keyboardType="numeric"
+							placeholder="Max"
+							onChangeText={(val) => onRangeChange("humidityMax", parseFloat(val))}
 						/>
 					</View>
 					<View style={styles.rangeOption}>
 						<Text style={styles.label}>Ánh sáng từ</Text>
 						<TextInput
 							style={styles.input}
-							keyboardType='numeric'
-							placeholder='Min'
+							keyboardType="numeric"
+							placeholder="Min"
 							onChangeText={(val) => onRangeChange("lightMin", parseFloat(val))}
 						/>
 						<Text style={styles.label2}>đến</Text>
 						<TextInput
 							style={styles.input}
-							keyboardType='numeric'
-							placeholder='Max'
+							keyboardType="numeric"
+							placeholder="Max"
 							onChangeText={(val) => onRangeChange("lightMax", parseFloat(val))}
 						/>
 					</View>
@@ -620,6 +544,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
 				</View>
 			</Animated.View>
 		</TouchableWithoutFeedback>
+
 	);
 };
 
@@ -660,11 +585,11 @@ const styles = StyleSheet.create({
 	},
 	label: {
 		fontSize: 16,
-		width: 100,
+		width: 100
 	},
 	label2: {
 		fontSize: 16,
-		width: "auto",
+		width: "auto"
 	},
 	button: {
 		backgroundColor: "#3B82F6",
@@ -683,7 +608,7 @@ const styles = StyleSheet.create({
 		display: "flex",
 		flexDirection: "row",
 		alignItems: "center",
-		gap: 10,
+		gap: 10
 	},
 	input: {
 		borderColor: "#ccc",
@@ -694,15 +619,15 @@ const styles = StyleSheet.create({
 		width: "auto",
 	},
 	tooltip: {
-		position: "absolute",
-		backgroundColor: "#333",
+		position: 'absolute',
+		backgroundColor: '#333',
 		padding: 8,
 		borderRadius: 6,
 		opacity: 0.8,
 		zIndex: 10,
 	},
 	tooltipText: {
-		color: "#fff",
+		color: '#fff',
 		fontSize: 12,
 	},
 });
